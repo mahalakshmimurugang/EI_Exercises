@@ -41,6 +41,8 @@ listing classrooms when no classrooms are available - >
 Scheduling assignments when the class has no students - >
 ![image](https://github.com/user-attachments/assets/f628e326-4536-4c93-a0ce-dcf24f6fcf15)
 
+Add a similar named student in a different classroom - >
+![image](https://github.com/user-attachments/assets/ca899288-1fcb-4ba7-8692-1a675bd0703e)
 
 
 
