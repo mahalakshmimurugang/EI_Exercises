@@ -1,0 +1,192 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Scanner;
+
+public class VirtualClassroomManager {
+   private Map<String, Classroom> classrooms = new HashMap();
+   private Map<String, Student> students = new HashMap();
+
+   public VirtualClassroomManager() {
+   }
+
+   public void run() {
+      Scanner var1 = new Scanner(System.in);
+
+      while(true) {
+         System.out.print("Enter command: ");
+         String var2 = var1.nextLine();
+         String[] var3 = var2.split(" ");
+
+         try {
+            switch (var3[0]) {
+               case "add_classroom":
+                  this.addClassroom(var3[1]);
+                  break;
+               case "add_student":
+                  this.addStudent(var3[1], var3[2]);
+                  break;
+               case "schedule_assignment":
+                  this.scheduleAssignment(var3[1], var3[2]);
+                  break;
+               case "submit_assignment":
+                  this.submitAssignment(var3[1], var3[2], var3[3]);
+                  break;
+               case "list_classrooms":
+                  this.listClassrooms(var1);
+                  break;
+               case "list_students":
+                  this.listStudents(var3[1]);
+                  break;
+               case "exit":
+                  System.out.println("Goodbye!");
+                  return;
+               default:
+                  System.out.println("Invalid command. Try again!");
+            }
+         } catch (ArrayIndexOutOfBoundsException var6) {
+            System.out.println("Invalid command format. Try again!");
+         } catch (Exception var7) {
+            System.out.println("An error occurred: " + var7.getMessage());
+         }
+      }
+   }
+
+   private void addClassroom(String var1) {
+      try {
+         Classroom var2 = new Classroom(var1);
+         this.classrooms.put(var1, var2);
+         System.out.println("Classroom Addition: " + var1 + " has been created.");
+      } catch (Exception var3) {
+         System.out.println("Error creating classroom: " + var3.getMessage());
+      }
+
+   }
+
+   private void addStudent(String var1, String var2) {
+      try {
+         if (!this.classrooms.containsKey(var2)) {
+            System.out.println("Classroom " + var2 + " does not exist.");
+            return;
+         }
+
+         Student var3 = new Student(var1, var2);
+         this.students.put(var1, var3);
+         ((Classroom)this.classrooms.get(var2)).addStudent(var3);
+         System.out.println("Student Addition: " + var1 + " has been enrolled in " + var2 + ".");
+      } catch (Exception var4) {
+         System.out.println("Error adding student: " + var4.getMessage());
+      }
+
+   }
+
+   private void scheduleAssignment(String var1, String var2) {
+      try {
+         if (!this.classrooms.containsKey(var1)) {
+            System.out.println("Classroom " + var1 + " does not exist.");
+            return;
+         }
+
+         Assignment var3 = new Assignment(var2);
+         ((Classroom)this.classrooms.get(var1)).addAssignment(var3);
+         System.out.println("Assignment Scheduled: Assignment for " + var1 + " has been scheduled.");
+      } catch (Exception var4) {
+         System.out.println("Error scheduling assignment: " + var4.getMessage());
+      }
+
+   }
+
+   private void submitAssignment(String var1, String var2, String var3) {
+      try {
+         if (!this.students.containsKey(var1) || !this.classrooms.containsKey(var2)) {
+            System.out.println("Student or classroom does not exist.");
+            return;
+         }
+
+         Student var4 = (Student)this.students.get(var1);
+         Classroom var5 = (Classroom)this.classrooms.get(var2);
+         if (!var5.getStudents().contains(var4)) {
+            System.out.println("Student is not enrolled in this classroom.");
+            return;
+         }
+
+         Assignment var6 = var5.getAssignment(var3);
+         if (var6 == null) {
+            System.out.println("Assignment does not exist.");
+            return;
+         }
+
+         var4.submitAssignment(var6);
+         System.out.println("Assignment Submission: Assignment submitted by Student " + var1 + " in " + var2 + ".");
+      } catch (Exception var7) {
+         System.out.println("Error submitting assignment: " + var7.getMessage());
+      }
+
+   }
+
+   private void listClassrooms(Scanner var1) {
+      try {
+         if (this.classrooms.isEmpty()) {
+            System.out.println("No classrooms available.");
+            System.out.print("Would you like to add a new classroom? (yes/no): ");
+            String var2 = var1.nextLine();
+            if (var2.equalsIgnoreCase("yes")) {
+               System.out.print("Enter classroom name: ");
+               String var3 = var1.nextLine();
+               this.addClassroom(var3);
+            }
+         } else {
+            System.out.println("Classrooms:");
+            Iterator var5 = this.classrooms.values().iterator();
+
+            while(var5.hasNext()) {
+               Classroom var6 = (Classroom)var5.next();
+               System.out.println(var6.getName());
+            }
+         }
+      } catch (Exception var4) {
+         System.out.println("Error listing classrooms: " + var4.getMessage());
+      }
+
+   }
+
+   private void listStudents(String var1) {
+      Scanner var2 = new Scanner(System.in);
+
+      try {
+         if (!this.classrooms.containsKey(var1)) {
+            System.out.println("Classroom " + var1 + " does not exist.");
+            return;
+         }
+
+         Classroom var3 = (Classroom)this.classrooms.get(var1);
+         if (var3.getStudents().isEmpty()) {
+            System.out.println("No students enrolled in " + var1 + ".");
+            System.out.print("Would you like to add a new student? (yes/no): ");
+            String var4 = var2.nextLine();
+            if (var4.equalsIgnoreCase("yes")) {
+               System.out.print("Enter student ID: ");
+               String var5 = var2.nextLine();
+               this.addStudent(var5, var1);
+            }
+         } else {
+            System.out.println("Students in " + var1 + ":");
+            Iterator var7 = var3.getStudents().iterator();
+
+            while(var7.hasNext()) {
+               Student var8 = (Student)var7.next();
+               System.out.println(var8.getId());
+            }
+         }
+      } catch (Exception var6) {
+         System.out.println("Error listing students: " + var6.getMessage());
+      }
+
+   }
+
+   public static void main(String[] var0) {
+      VirtualClassroomManager var1 = new VirtualClassroomManager();
+      var1.run();
+   }
+}
